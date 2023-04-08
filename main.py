@@ -35,6 +35,7 @@ class Movie(db.Model):
     # def __repr__(self):
     #     return '<Book %r>' % self.title
 
+
 db.create_all()
 
 
@@ -70,7 +71,7 @@ class MovieForm(FlaskForm):
 def home():
     all_movies = Movie.query.order_by(Movie.rating).all()
     for i in range(len(all_movies)):
-        all_movies[i].ranking=len(all_movies)-i
+        all_movies[i].ranking = len(all_movies) - i
     db.session.commit()
     return render_template("index.html", movies=all_movies)
 
@@ -79,13 +80,13 @@ def home():
 def rate():
     form = RateMovieForm()
     movie_id = request.args.get('id')
-    movie_to_rate = Movie.query.get(movie_id)
+    movie = Movie.query.get(movie_id)
     if form.validate_on_submit():
-        movie_to_rate.rating = form.rating.data
-        movie_to_rate.review = form.review.data
+        movie.rating = form.rating.data
+        movie.review = form.review.data
         db.session.commit()
         return redirect(url_for('home'))
-    return render_template('edit.html', movie=movie_to_rate, form=form)
+    return render_template('edit.html', movie=movie, form=form)
 
 
 @app.route('/delete')
@@ -128,4 +129,4 @@ def find():
 
 
 if __name__ == '__main__':
-    app.run(debug=True,host="localhost", port=5000)
+    app.run(debug=True, host="localhost", port=5000)
